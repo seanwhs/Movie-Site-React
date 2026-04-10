@@ -1,70 +1,104 @@
-# Getting Started with Create React App
+# 🎬 MovieDux: Advanced React Hooks & State Orchestration
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I developed **MovieDux** as a React-based cinema discovery project. While the UI presents a sleek movie browsing experience, the core of the project is a technical deep-dive into **React Functional Components**, **Hook-driven state management**, and **dynamic data filtering**.
 
-## Available Scripts
+The application operates as a self-contained ecosystem using a local JSON "database," focusing on the architectural challenges of synchronizing state across multiple views and managing complex user interactions.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🏗️ Architecture & Technical Design
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The project follows a **Unidirectional Data Flow** pattern, where `App.js` serves as the "Single Source of Truth."
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 📂 Directory Structure
+```text
+Movie-Site-React/
+├── public/
+│   ├── images/          # Local movie posters & assets
+│   ├── movies.json      # Central static data repository
+│   └── index.html       # Entry point
+├── src/
+│   ├── components/
+│   │   ├── Header.js      # Stateless branding component
+│   │   ├── Footer.js      # Stateless informational component
+│   │   ├── MovieCard.js   # Logic-heavy presentational component
+│   │   ├── MoviesGrid.js  # State-managed filtering engine
+│   │   └── Watchlist.js   # Filtered view of the global state
+│   ├── App.js           # Core Orchestrator (State & Routing)
+│   ├── styles.css       # Global design system & utility classes
+│   └── index.js         # React DOM initialization
+└── package.json         # Dependency manifest
+```
 
-### `npm test`
+### 🧠 Core Logic & Hooks Usage
+1.  **Global State Management (`App.js`)**:
+    * Uses `useState` to maintain the master list of `movies` and a `watchlist` (an array of IDs).
+    * Uses `useEffect` with an empty dependency array to simulate a database fetch on mount.
+    * Implements a `toggleWatchlist` function that handles both addition and removal logic, passed down via props.
+2.  **Filter Orchestration (`MoviesGrid.js`)**:
+    * Manages three distinct local states (`searchTerm`, `genre`, `rating`).
+    * Implements a **composite filtering logic** that ensures all three criteria must be met simultaneously before rendering.
+3.  **UI Resilience (`MovieCard.js`)**:
+    * Features an `onError` handler for images to prevent broken layouts if a poster is missing.
+    * Uses dynamic template literals to apply CSS classes based on numerical rating thresholds.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## ✨ Feature Deep-Dive
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🔍 Advanced Filtering System
+The `MoviesGrid` doesn't just display data; it processes it. Users can slice the data by:
+* **Textual Matching**: Real-time search that filters as you type.
+* **Category Selection**: Dropdown filtering for specific genres (Action, Drama, etc.).
+* **Performance Metrics**: A custom "Rating" filter that categorizes movies into "Good" (8+), "Ok" (5-8), and "Bad" (<5).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🏷️ Smart Watchlist
+The Watchlist isn't just a separate page; it's a dynamic view of the master data.
+* The `Watchlist` component maps over the ID array and uses `.find()` to retrieve full movie objects from the master list.
+* The "In Watchlist" toggle state is synchronized globally; removing a movie from the Watchlist view immediately updates its status in the main Grid.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🎨 Dynamic Styling
+* **Rating Indicators**: Ratings are color-coded using a helper function (`getRatingClass`) to provide immediate visual feedback.
+* **Conditional Rendering**: The UI adapts based on whether a movie is currently in the user's list, changing the toggle label and state.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🛠️ Tech Stack & Skills Covered
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Category | Technology | Concepts Applied |
+| :--- | :--- | :--- |
+| **Framework** | React 18+ | Functional Components, Props, Lifting State |
+| **State** | Hooks | `useState`, `useEffect`, Array Manipulation |
+| **Routing** | React Router v6 | `BrowserRouter`, `Routes`, `Link` |
+| **Data** | JSON / Fetch | Asynchronous Data Loading, Local API Simulation |
+| **Styling** | CSS3 | Flexbox, Grid, Dynamic Class Binding |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🔍 Code Review & Best Practices
 
-## Learn More
+* **Locality of Behavior**: The `MovieCard` handles its own internal logic (rating classes and image errors), keeping the `MoviesGrid` clean.
+* **Pure Functions**: Filtering logic (`matchesGenre`, `matchesRating`) is decoupled from the JSX for better readability and testability.
+* **Robust State Updates**: The watchlist toggle uses the **functional update pattern** (`prev => ...`) to ensure state integrity during rapid user interactions.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🚀 How to Run
 
-### Code Splitting
+1. **Clone the project**
+   ```bash
+   git clone https://github.com/seanwhs/Movie-Site-React.git
+   ```
+2. **Install node modules**
+   ```bash
+   npm install
+   ```
+3. **Execute**
+   ```bash
+   npm start
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Developed by Sean**
+*A project dedicated to exploration of the React Hook.*
